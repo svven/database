@@ -5,6 +5,5 @@ import config, db
 
 from auth.models import *
 from news.models import *
-# from readers.models import *
 from twitter.models import *
 
