@@ -2,6 +2,7 @@
 News models.
 """
 from .. import db
+from ..utils import slugify
 
 
 class Link(db.Model):
@@ -10,10 +11,10 @@ class Link(db.Model):
     __tablename__ = 'news_links'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    link_id = db.Column(db.String, unique=True) #, nullable=False 
+    slug = db.Column(db.String, unique=True) #, nullable=False 
 
     url = db.Column(db.String, nullable=False, unique=True)
-    source = db.Column(db.String, nullable=False)
+    site = db.Column(db.String)
     title = db.Column(db.String)
     image_url = db.Column(db.String)
     description = db.Column(db.String)
@@ -24,8 +25,16 @@ class Link(db.Model):
     marks = db.relationship('Mark', backref='link', lazy='dynamic')
 
     def __repr__(self):
-        return '<News Link (%s): %s>' % (self.link_id, self.url)
+        return '<News Link (%s): %s>' % (self.slug, self.url)
 
+@db.event.listens_for(Link, "after_insert")
+def after_insert(mapper, connection, target):
+    link_table = Link.__table__
+    if target.slug is None:
+        update = link_table.update().
+            where(link_table.c.id==target.id).
+            values(slug=slugify(target.id))
+        connection.execute(update)
 
 class Reader(db.Model):
     "News reader accounts."
@@ -33,17 +42,18 @@ class Reader(db.Model):
     __tablename__ = 'news_readers'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    reader_id = db.Column(db.String, unique=True) #, nullable=False
 
     auth_user_id = db.Column(db.BigInteger,
         db.ForeignKey('auth_users.id'), unique=True)
     twitter_user_id = db.Column(db.BigInteger,
         db.ForeignKey('twitter_users.user_id'), unique=True) #, nullable=False
+    # flipboard_user_id = db.Column(db.BigInteger,
+    #     db.ForeignKey('flipboard_users.user_id'), unique=True) #, nullable=False
 
     marks = db.relationship('Mark', backref='reader', lazy='dynamic')
 
     def __repr__(self):
-        return '<News Reader (%s): @%s>' % (self.reader_id, self.twitter_user.screen_name)
+        return '<News Reader (%s): @%s>' % (self.id, self.twitter_user.screen_name)
 
 
 class Mark(db.Model):
@@ -56,11 +66,14 @@ class Mark(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
 
-    link_id = db.Column(db.String, 
-        db.ForeignKey('news_links.link_id'), nullable=False)
-    reader_id = db.Column(db.String,
-        db.ForeignKey('news_readers.reader_id'), nullable=False)
+    link_id = db.Column(db.BigInteger, 
+        db.ForeignKey('news_links.id'), nullable=False)
+    reader_id = db.Column(db.BigInteger,
+        db.ForeignKey('news_readers.id'), nullable=False)
     moment = db.Column(db.Integer, nullable=False) # created_at unix time
+    
+    # source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
+    #     default=Source.DEFAULT) # SVVEN_WEB, TWITTER_STATUS, TWITTER_FAVORITE
 
     unmarked = db.Column(db.Boolean) #, nullable=False, default=False
 

@@ -10,8 +10,8 @@ class User(db.Model):
     __tablename__ = 'twitter_users'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    
     user_id = db.Column(db.BigInteger, nullable=False, unique=True)
+
     screen_name = db.Column(db.String, nullable=False, unique=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
@@ -19,6 +19,8 @@ class User(db.Model):
     protected = db.Column(db.Boolean)
     friends_count = db.Column(db.Integer)
     followers_count = db.Column(db.Integer)
+
+    # ignored = db.Column(db.Boolean, default=False)
 
     token = db.relationship('Token', backref='user', uselist=False)
     timeline = db.relationship('Timeline', backref='user', uselist=False)
@@ -100,8 +102,8 @@ class Status(db.Model):
     __tablename__ = 'twitter_statuses'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    
     status_id = db.Column(db.BigInteger, nullable=False, unique=True)
+    
     user_id = db.Column(db.BigInteger, 
         db.ForeignKey('twitter_users.user_id'), nullable=False)
     url = db.Column(db.String, nullable=False)
@@ -110,8 +112,8 @@ class Status(db.Model):
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
 
-    link_id = db.Column(db.String, 
-        db.ForeignKey('news_links.link_id'))
+    link_id = db.Column(db.BigInteger, 
+        db.ForeignKey('news_links.id'))
 
     def __init__(self, status):
         "Param `status` is a Twitter API status."

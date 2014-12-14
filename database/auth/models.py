@@ -19,5 +19,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
 
+    reader = db.relationship('Reader', backref='auth_user', uselist=False)
+
     def __repr__(self):
         return '<Auth User (%s): %s>' % (self.id, self.screen_name)
