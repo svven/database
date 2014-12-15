@@ -28,7 +28,7 @@ class Link(db.Model):
         return '<News Link (%s): %s>' % (self.slug, self.url)
 
 @db.event.listens_for(Link, "after_insert")
-def after_insert(mapper, connection, target):
+def after_insert_link(mapper, connection, target):
     link_table = Link.__table__
     if target.slug is None:
         connection.execute(

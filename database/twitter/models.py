@@ -20,7 +20,7 @@ class User(db.Model):
     friends_count = db.Column(db.Integer)
     followers_count = db.Column(db.Integer)
 
-    # ignored = db.Column(db.Boolean, default=False)
+    ignored = db.Column(db.Boolean)
 
     token = db.relationship('Token', backref='user', uselist=False)
     timeline = db.relationship('Timeline', backref='user', uselist=False)
