@@ -12,8 +12,8 @@ setup(
     url='https://bitbucket.org/svven/database',
     description='Database models and helpers working with SQLAlchemy.',
     install_requires=[
-        'Flask',
-        'Flask-Login',
         'SQLAlchemy>=0.9.8',
+        'alembic>=0.7.1',
+        'hashids>=1.0.1',
     ],
 )
