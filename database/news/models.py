@@ -31,10 +31,11 @@ class Link(db.Model):
 def after_insert(mapper, connection, target):
     link_table = Link.__table__
     if target.slug is None:
-        update = link_table.update().
+        connection.execute(
+            link_table.update().
             where(link_table.c.id==target.id).
             values(slug=slugify(target.id))
-        connection.execute(update)
+        )
 
 class Reader(db.Model):
     "News reader accounts."
