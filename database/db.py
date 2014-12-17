@@ -4,7 +4,8 @@ Similar to SQLAlchemy class from flask.ext.sqlalchemy.
 """
 from . import config
 
-from sqlalchemy import create_engine, engine_from_config, func, event, \
+from sqlalchemy import \
+	create_engine, engine_from_config, func, event, \
     Column, ForeignKey, UniqueConstraint, CheckConstraint, \
     Boolean, DateTime, Enum, SmallInteger, Integer, BigInteger, String
 from sqlalchemy.orm import sessionmaker, relationship

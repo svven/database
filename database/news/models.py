@@ -2,7 +2,7 @@
 News models.
 """
 from .. import db
-from ..utils import slugify
+from ..utils import slugify, urlsite
 
 
 class Link(db.Model):
@@ -24,6 +24,14 @@ class Link(db.Model):
 
     marks = db.relationship('Mark', backref='link', lazy='dynamic')
 
+    def __init__(self, summary):
+        "Param `summary` after extraction."
+        self.url = summary.url
+        self.site = urlsite(summary.url)
+        self.title = summary.title
+        self.image_url = summary.image #.url
+        self.description = summary.description
+
     def __repr__(self):
         return '<News Link (%s): %s>' % (self.slug, self.url)
 
@@ -36,6 +44,7 @@ def after_insert_link(mapper, connection, target):
             where(link_table.c.id==target.id).
             values(slug=slugify(target.id))
         )
+
 
 class Reader(db.Model):
     "News reader accounts."
@@ -57,12 +66,19 @@ class Reader(db.Model):
         return '<News Reader (%s): @%s>' % (self.id, self.twitter_user.screen_name)
 
 
+class Source:
+    """
+    Enum of mark sources.
+    """
+    values = (NONE, TWITTER, WEB, API) = ('none', 'twitter', 'web', 'api')
+
+
 class Mark(db.Model):
     "News link marked as interesting by reader."
 
     __tablename__ = 'news_marks'
     __table_args__ = (
-        db.UniqueConstraint('link_id', 'reader_id'),
+        # db.UniqueConstraint('link_id', 'reader_id'), # nope
     )
 
     id = db.Column(db.BigInteger, primary_key=True)
@@ -71,10 +87,10 @@ class Mark(db.Model):
         db.ForeignKey('news_links.id'), nullable=False)
     reader_id = db.Column(db.BigInteger,
         db.ForeignKey('news_readers.id'), nullable=False)
-    moment = db.Column(db.Integer, nullable=False) # created_at unix time
+    moment = db.Column(db.BigInteger, nullable=False) # created_at unix time
     
-    # source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
-    #     default=Source.DEFAULT) # SVVEN_WEB, TWITTER_STATUS, TWITTER_FAVORITE
+    source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
+        default=Source.NONE) # TWITTER, WEB
 
     unmarked = db.Column(db.Boolean) #, nullable=False, default=False
 
