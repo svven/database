@@ -25,11 +25,11 @@ class Link(db.Model):
     marks = db.relationship('Mark', backref='link', lazy='dynamic')
 
     def __init__(self, summary):
-        "Param `summary` after extraction."
+        "Param `summary` after extraction via 'summary' package."
         self.url = summary.url
         self.site = urlsite(summary.url)
         self.title = summary.title
-        self.image_url = summary.image #.url
+        self.image_url = summary.image and summary.image.url or None #.url
         self.description = summary.description
 
     def __repr__(self):
