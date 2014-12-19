@@ -2,7 +2,7 @@
 News models.
 """
 from .. import db
-from ..utils import slugify, urlsite
+from ..utils import slugify, urlsite, munixtime
 
 
 class Link(db.Model):
@@ -57,8 +57,8 @@ class Reader(db.Model):
         db.ForeignKey('auth_users.id'), unique=True)
     twitter_user_id = db.Column(db.BigInteger,
         db.ForeignKey('twitter_users.user_id'), unique=True) #, nullable=False
-    # flipboard_user_id = db.Column(db.BigInteger,
-    #     db.ForeignKey('flipboard_users.user_id'), unique=True) #, nullable=False
+    # facebook_user_id = db.Column(db.BigInteger,
+    #     db.ForeignKey('facebook_users.user_id'), unique=True) #, nullable=False
 
     marks = db.relationship('Mark', backref='reader', lazy='dynamic')
 
@@ -93,4 +93,20 @@ class Mark(db.Model):
         default=Source.NONE) # TWITTER, WEB
 
     unmarked = db.Column(db.Boolean) #, nullable=False, default=False
+
+    twitter_status_id = db.Column(db.BigInteger,
+        db.ForeignKey('twitter_statuses.status_id'), unique=True) #, nullable=True
+    # facebook_status_id = db.Column(db.BigInteger,
+    #     db.ForeignKey('facebook_statuses.status_id'), unique=True) #, nullable=True
+
+    def __init__(self, status, reader_id):
+        "Param `status` is a twitter.Status object."
+        self.link_id = status.link_id
+        self.reader_id = reader_id
+        self.moment = munixtime(status.created_at)
+        self.source = Source.TWITTER
+        self.twitter_status_id = status.status_id
+
+    def __repr__(self):
+        return '<News Mark (%s): (%s, %s)>' % (self.id, self.link_id, self.reader_id)
 
