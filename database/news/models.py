@@ -92,12 +92,12 @@ class Mark(db.Model):
     source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
         default=Source.NONE) # TWITTER, WEB
 
-    unmarked = db.Column(db.Boolean) #, nullable=False, default=False
-
     twitter_status_id = db.Column(db.BigInteger,
         db.ForeignKey('twitter_statuses.status_id'), unique=True) #, nullable=True
     # facebook_status_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_statuses.status_id'), unique=True) #, nullable=True
+
+    unmarked = db.Column(db.Boolean) #, nullable=False, default=False
 
     def __init__(self, status, reader_id):
         "Param `status` is a twitter.Status object."
