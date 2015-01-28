@@ -1,0 +1,23 @@
+Some random notes on getting database working.
+
+DROP/CREATE DB FROM PYTHON
+
+cd database
+source ./env/bin/activate
+(env)Jonathans-MacBook-Pro:database jonwilliams$ python
+Python 2.7.5 (default, Mar  9 2014, 22:15:05)
+[GCC 4.2.1 Compatible Apple LLVM 5.0 (clang-500.0.68)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import database.db
+>>> import database.db as db
+>>> db.drop_all()
+>>> db.create_all()
+
+
+RESTORE DB
+
+1. PgAdmin3
+2. Drop (cascade) Svven public schema
+3. Click on Svven db
+4. Right click Restore
+5. Find dump file

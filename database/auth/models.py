@@ -2,10 +2,10 @@
 Auth models.
 """
 from .. import db
-# from flask.ext.login import UserMixin
+from flask.ext.login import UserMixin
 
 
-class User(db.Model): #, UserMixin 
+class User(db.Model, UserMixin): #, UserMixin
     "Authenticated user."
 
     __tablename__ = 'auth_users'
@@ -23,3 +23,6 @@ class User(db.Model): #, UserMixin
 
     def __repr__(self):
         return '<Auth User (%s): %s>' % (self.id, self.screen_name)
+
+    def is_active(self):
+        return True
