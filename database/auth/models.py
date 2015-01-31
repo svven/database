@@ -2,10 +2,9 @@
 Auth models.
 """
 from .. import db
-# from flask.ext.login import UserMixin
 
 
-class User(db.Model): #, UserMixin 
+class User(db.Model): #, UserMixin
     "Authenticated user."
 
     __tablename__ = 'auth_users'
