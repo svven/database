@@ -30,7 +30,6 @@ session = scoped_session(Session)
 def init_app(app):
     @app.teardown_appcontext
     def shutdown_session(exception=None):
-        print "Remove session."
         session.remove()
 
 ## Model

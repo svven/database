@@ -99,6 +99,9 @@ class Mark(db.Model):
 
     unmarked = db.Column(db.Boolean) #, nullable=False, default=False
 
+    twitter_status = db.relationship('Status', backref='mark')
+
+
     def __init__(self, status, reader_id):
         "Param `status` is a twitter.Status object."
         self.link_id = status.link_id
