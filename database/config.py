@@ -17,5 +17,5 @@ def from_object(updates):
 
 ## SQLAlchemy
 ## http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html
-# SQLALCHEMY_ECHO = sqlalchemy_echo = True
+SQLALCHEMY_ECHO = sqlalchemy_echo = False
 SQLALCHEMY_DATABASE_URI = sqlalchemy_url = 'postgresql://svven@localhost/svven'

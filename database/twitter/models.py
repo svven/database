@@ -11,7 +11,6 @@ class User(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.BigInteger, nullable=False, unique=True)
-
     screen_name = db.Column(db.String, nullable=False, unique=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
@@ -19,13 +18,11 @@ class User(db.Model):
     protected = db.Column(db.Boolean)
     friends_count = db.Column(db.Integer)
     followers_count = db.Column(db.Integer)
-
     ignored = db.Column(db.Boolean)
 
     token = db.relationship('Token', backref='user', uselist=False)
     timeline = db.relationship('Timeline', backref='user', uselist=False)
     statuses = db.relationship('Status', backref='user', lazy='dynamic')
-
     reader = db.relationship('Reader', backref='twitter_user', uselist=False)
 
     def __init__(self, user):
@@ -49,7 +46,6 @@ class Token(db.Model):
     __tablename__ = 'twitter_tokens'
 
     id = db.Column(db.BigInteger, primary_key=True)
-    
     user_id = db.Column(db.BigInteger, 
         db.ForeignKey('twitter_users.user_id'), nullable=False, unique=True)
     key = db.Column(db.String, nullable=False)
@@ -78,14 +74,11 @@ class Timeline(db.Model):
     MAX_FAILURES = 3 # to keep enabled
 
     id = db.Column(db.BigInteger, primary_key=True)
-    
     user_id = db.Column(db.BigInteger, 
         db.ForeignKey('twitter_users.user_id'), nullable=False, unique=True)
     since_id = db.Column(db.BigInteger)
-
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
-
     enabled = db.Column(db.Boolean, nullable=False, default=True)
     next_check = db.Column(db.DateTime, default=db.func.now())
     prev_check = db.Column(db.DateTime)
@@ -103,17 +96,17 @@ class Status(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     status_id = db.Column(db.BigInteger, nullable=False, unique=True)
-    
     user_id = db.Column(db.BigInteger, 
         db.ForeignKey('twitter_users.user_id'), nullable=False)
     url = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
-
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
-
     link_id = db.Column(db.BigInteger, 
         db.ForeignKey('news_links.id'))
+
+    link = db.relationship('Link', backref='twitter_status')
+    mark = db.relationship('Mark', backref='twitter_status', uselist=False)
 
     def __init__(self, status):
         "Param `status` is a Twitter API status."

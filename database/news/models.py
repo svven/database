@@ -12,20 +12,23 @@ class Link(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     slug = db.Column(db.String, unique=True) #, nullable=False 
-
     url = db.Column(db.String, nullable=False, unique=True)
     site = db.Column(db.String)
     title = db.Column(db.String)
     image_url = db.Column(db.String)
     description = db.Column(db.String)
-
     broken = db.Column(db.Boolean)
     known = db.Column(db.Boolean) # e.g. http://apple.com
+    # updated = db.Column(db.Boolean)
 
     marks = db.relationship('Mark', backref='link', lazy='dynamic')
 
     def __init__(self, summary):
-        "Param `summary` after extraction via 'summary' package."
+        "Init with extracted `summary`."
+        self.load(summary)
+
+    def load(self, summary):
+        "Load link data from specified extracted `summary`."
         self.url = summary.url
         self.site = urlsite(summary.url)
         self.title = summary.title
@@ -52,7 +55,6 @@ class Reader(db.Model):
     __tablename__ = 'news_readers'
 
     id = db.Column(db.BigInteger, primary_key=True)
-
     auth_user_id = db.Column(db.BigInteger,
         db.ForeignKey('auth_users.id'), unique=True)
     twitter_user_id = db.Column(db.BigInteger,
@@ -82,25 +84,18 @@ class Mark(db.Model):
     )
 
     id = db.Column(db.BigInteger, primary_key=True)
-
     link_id = db.Column(db.BigInteger, 
         db.ForeignKey('news_links.id'), nullable=False)
     reader_id = db.Column(db.BigInteger,
         db.ForeignKey('news_readers.id'), nullable=False)
     moment = db.Column(db.BigInteger, nullable=False) # created_at unix time
-    
     source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
         default=Source.NONE) # TWITTER, WEB
-
     twitter_status_id = db.Column(db.BigInteger,
         db.ForeignKey('twitter_statuses.status_id'), unique=True) #, nullable=True
     # facebook_status_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_statuses.status_id'), unique=True) #, nullable=True
-
     unmarked = db.Column(db.Boolean) #, nullable=False, default=False
-
-    twitter_status = db.relationship('Status', backref='mark')
-
 
     def __init__(self, status, reader_id):
         "Param `status` is a twitter.Status object."
