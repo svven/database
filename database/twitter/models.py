@@ -1,6 +1,8 @@
 """
 Twitter models.
 """
+import datetime
+
 from .. import db
 
 
@@ -25,9 +27,10 @@ class User(db.Model):
     statuses = db.relationship('Status', backref='user', lazy='dynamic')
     reader = db.relationship('Reader', backref='twitter_user', uselist=False)
 
-    def __init__(self, user):
+    def __init__(self, user, key=None, secret=None):
         "Param `user` is a Twitter API user."
-        self.user_id = user.id
+        user_id = user.id
+        self.user_id = user_id
         self.screen_name = user.screen_name
         self.name = user.name
         self.description = user.description
@@ -35,6 +38,9 @@ class User(db.Model):
         self.protected = user.protected
         self.friends_count = user.friends_count
         self.followers_count = user.followers_count
+        if key and secret:
+            self.token = Token(user_id=user_id, key=key, secret=secret)
+            self.timeline = Timeline(user_id=user_id)
 
     def __repr__(self):
         return '<Twitter User (%s): @%s>' % (self.user_id, self.screen_name)
@@ -80,7 +86,7 @@ class Timeline(db.Model):
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
     enabled = db.Column(db.Boolean, nullable=False, default=True)
-    next_check = db.Column(db.DateTime, default=db.func.now())
+    next_check = db.Column(db.DateTime, default=datetime.datetime.utcnow())
     prev_check = db.Column(db.DateTime)
     frequency = db.Column(db.Integer, nullable=False, default=DEFAULT_FREQUENCY)
     failures = db.Column(db.SmallInteger, nullable=False, default=0)

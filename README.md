@@ -7,6 +7,9 @@ Database models and helpers working with SQLAlchemy.
 Create (or drop) database
 -------------------------
 
+First have an empty database according to configured connection string.
+Then generate the schema in any of the following ways.
+
 Using plain SQLAlchemy
 
 ```
@@ -20,8 +23,8 @@ Using Alembic migrations
 
 ```
 $ . env/bin/activate
-$ alembic init migrations
-$ alembic revision --autogenerate -m "Initial revision"
+$ # alembic init migrations # done
+$ # alembic revision --autogenerate -m "Initial revision" # done
 $ alembic upgrade head
 ```
 
