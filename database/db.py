@@ -37,13 +37,10 @@ Model = declarative_base()
 Model.query = session.query_property()
 
 ## Create and drop all
-def import_all():
-    import auth, news, twitter
-
 def create_all():
-    import_all()
+    import models
     Model.metadata.create_all(get_engine(config))
 
 def drop_all():
-    import_all()
+    import models
     Model.metadata.drop_all(get_engine(config))

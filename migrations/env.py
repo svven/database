@@ -20,9 +20,10 @@ database_dir = path.realpath(
     path.join(path.dirname(path.abspath(__file__)), '..'))
 sys.path.insert(0, database_dir)
 
-import database
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+import database
+from database import models
 target_metadata = database.db.Model.metadata
 
 # other values from the config, defined by the needs of env.py,
