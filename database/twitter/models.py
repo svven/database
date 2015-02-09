@@ -28,9 +28,16 @@ class User(db.Model):
     reader = db.relationship('Reader', backref='twitter_user', uselist=False)
 
     def __init__(self, user, key=None, secret=None):
-        "Param `user` is a Twitter API user."
+        "Init with Twitter API `user`."
+        self.load(user)
         user_id = user.id
         self.user_id = user_id
+        if key and secret:
+            self.token = Token(user_id=user_id, key=key, secret=secret)
+            self.timeline = Timeline(user_id=user_id)
+
+    def load(self, user):
+        "Load user data from specified Twitter API `user`."
         self.screen_name = user.screen_name
         self.name = user.name
         self.description = user.description
@@ -38,9 +45,6 @@ class User(db.Model):
         self.protected = user.protected
         self.friends_count = user.friends_count
         self.followers_count = user.followers_count
-        if key and secret:
-            self.token = Token(user_id=user_id, key=key, secret=secret)
-            self.timeline = Timeline(user_id=user_id)
 
     def __repr__(self):
         return '<Twitter User (%s): @%s>' % (self.user_id, self.screen_name)
