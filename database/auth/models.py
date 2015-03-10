@@ -18,7 +18,8 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
 
-    reader = db.relationship('Reader', backref='auth_user', uselist=False)
+    reader = db.relationship('Reader', 
+        backref='auth_user', uselist=False, enable_typechecks=False)
 
     def __init__(self, user):
         "Init with Twitter API `user`."
