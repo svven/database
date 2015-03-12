@@ -64,6 +64,17 @@ class Reader(db.Model):
 
     marks = db.relationship('Mark', backref='reader', lazy='dynamic')
 
+    @property
+    def screen_name(self):
+        return (self.auth_user and self.auth_user.screen_name) or \
+            (self.twitter_user and self.twitter_user.screen_name) or None
+
+    @property
+    def profile_image_url(self):
+        return (self.auth_user and self.auth_user.profile_image_url) or \
+            (self.twitter_user and self.twitter_user.profile_image_url) or None
+
+
     def __repr__(self):
         return '<News Reader (%s): @%s>' % (self.id, self.twitter_user.screen_name)
 
