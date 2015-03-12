@@ -3,3 +3,4 @@ env
 backups
 svven_database*
 *.pyc
+*.sql
