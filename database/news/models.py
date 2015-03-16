@@ -62,8 +62,11 @@ class Reader(db.Model):
     # facebook_user_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_users.user_id'), unique=True) #, nullable=False
 
+    auth_user = db.relationship('database.auth.models.User', lazy='joined')
+    twitter_user = db.relationship('database.twitter.models.User', lazy='joined')
     marks = db.relationship('Mark', backref='reader', lazy='dynamic')
 
+    ## Proxy properties
     @property
     def screen_name(self):
         return (self.auth_user and self.auth_user.screen_name) or \
@@ -74,9 +77,12 @@ class Reader(db.Model):
         return (self.auth_user and self.auth_user.profile_image_url) or \
             (self.twitter_user and self.twitter_user.profile_image_url) or None
 
+    @property
+    def ignored(self):
+        return self.twitter_user and self.twitter_user.ignored or False
 
     def __repr__(self):
-        return '<News Reader (%s): @%s>' % (self.id, self.twitter_user.screen_name)
+        return '<News Reader (%s): @%s>' % (self.id, self.screen_name)
 
 
 class Source:

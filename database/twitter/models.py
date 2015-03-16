@@ -25,7 +25,7 @@ class User(db.Model):
     token = db.relationship('Token', backref='user', uselist=False)
     timeline = db.relationship('Timeline', backref='user', uselist=False)
     statuses = db.relationship('Status', backref='user', lazy='dynamic')
-    reader = db.relationship('Reader', backref='twitter_user', uselist=False)
+    reader = db.relationship('Reader', uselist=False)
 
     def __init__(self, user, key=None, secret=None):
         "Init with Twitter API `user`."
