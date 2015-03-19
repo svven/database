@@ -18,8 +18,7 @@ class Link(db.Model):
     image_url = db.Column(db.String)
     description = db.Column(db.String)
     broken = db.Column(db.Boolean)
-    known = db.Column(db.Boolean) # e.g. http://apple.com
-    # updated = db.Column(db.Boolean)
+    ignored = db.Column(db.Boolean) # e.g. http://apple.com
 
     marks = db.relationship('Mark', backref='link', lazy='dynamic')
 
