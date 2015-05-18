@@ -60,7 +60,6 @@ class Reader(db.Model):
         db.ForeignKey('twitter_users.user_id'), unique=True) #, nullable=False
     # facebook_user_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_users.user_id'), unique=True) #, nullable=False
-    bot = db.Column(db.Boolean)
     featured = db.Column(db.Boolean)
     ignored = db.Column(db.Boolean)
 
