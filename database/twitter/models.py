@@ -116,7 +116,7 @@ class Status(db.Model):
         db.ForeignKey('news_links.id'))
 
     link = db.relationship('Link', backref='twitter_statuses')
-    mark = db.relationship('Mark', backref='twitter_status', uselist=False)
+    pick = db.relationship('Pick', backref='twitter_status', uselist=False)
 
     def __init__(self, status):
         "Param `status` is a Twitter API status."

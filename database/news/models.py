@@ -20,7 +20,7 @@ class Link(db.Model):
     broken = db.Column(db.Boolean)
     ignored = db.Column(db.Boolean) # e.g. http://apple.com
 
-    marks = db.relationship('Mark', backref='link', lazy='dynamic')
+    picks = db.relationship('Pick', backref='link', lazy='dynamic')
 
     def __init__(self, summary):
         "Init with extracted `summary`."
@@ -65,7 +65,7 @@ class Reader(db.Model):
 
     auth_user = db.relationship('database.auth.models.User', lazy='joined')
     twitter_user = db.relationship('database.twitter.models.User', lazy='joined')
-    marks = db.relationship('Mark', backref='reader', lazy='dynamic')
+    picks = db.relationship('Pick', backref='reader', lazy='dynamic')
 
     @property
     def user(self):
@@ -93,15 +93,15 @@ class Reader(db.Model):
 
 class Source:
     """
-    Enum of mark sources.
+    Enum of pick sources.
     """
     values = (NONE, TWITTER, WEB, API) = ('none', 'twitter', 'web', 'api')
 
 
-class Mark(db.Model):
-    "News link marked as interesting by reader."
+class Pick(db.Model):
+    "News link picked by reader."
 
-    __tablename__ = 'news_marks'
+    __tablename__ = 'news_picks'
     __table_args__ = (
         # db.UniqueConstraint('link_id', 'reader_id'), # nope
     )
@@ -112,13 +112,13 @@ class Mark(db.Model):
     reader_id = db.Column(db.BigInteger,
         db.ForeignKey('news_readers.id'), nullable=False)
     moment = db.Column(db.BigInteger, nullable=False) # created_at unix time
-    source = db.Column(db.Enum(*Source.values, name='mark_sources'), nullable=False,
+    source = db.Column(db.Enum(*Source.values, name='pick_sources'), nullable=False,
         default=Source.NONE) # TWITTER, WEB
     twitter_status_id = db.Column(db.BigInteger,
         db.ForeignKey('twitter_statuses.status_id'), unique=True) #, nullable=True
     # facebook_status_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_statuses.status_id'), unique=True) #, nullable=True
-    unmarked = db.Column(db.Boolean) #, nullable=False, default=False
+    # unpicked = db.Column(db.Boolean) #, nullable=False, default=False
 
     def __init__(self, status, reader_id):
         "Param `status` is a twitter.Status object."
@@ -129,5 +129,5 @@ class Mark(db.Model):
         self.twitter_status_id = status.status_id
 
     def __repr__(self):
-        return '<News Mark (%s): (%s, %s)>' % (self.id, self.link_id, self.reader_id)
+        return '<News Pick (%s): (%s, %s)>' % (self.id, self.link_id, self.reader_id)
 
