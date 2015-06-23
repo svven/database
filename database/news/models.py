@@ -71,6 +71,10 @@ class Reader(db.Model):
     def user(self):
         return not self.auth_user_id is None
 
+    @property
+    def visible(self):
+        return bool(self.user or self.featured)
+
     ## Proxy properties
     @property
     def screen_name(self):
