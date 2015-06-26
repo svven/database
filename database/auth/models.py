@@ -24,9 +24,12 @@ class User(db.Model):
 
     reader = db.relationship('Reader', uselist=False)
 
-    def __init__(self, user):
-        "Init with Twitter API `user`."
-        self.load(user)
+    def __init__(self, **kwargs):
+        "Base init or with Twitter API `user`."
+        if 'user' in kwargs:
+            self.load(kwargs['user'])
+        else:
+            super(User, self).__init__(**kwargs)
 
     def load(self, user):
         "Load user data from specified Twitter API `user`."
