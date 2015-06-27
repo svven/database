@@ -60,8 +60,8 @@ class Reader(db.Model):
         db.ForeignKey('twitter_users.user_id'), unique=True) #, nullable=False
     # facebook_user_id = db.Column(db.BigInteger,
     #     db.ForeignKey('facebook_users.user_id'), unique=True) #, nullable=False
-    featured = db.Column(db.Boolean)
     ignored = db.Column(db.Boolean)
+    featured = db.Column(db.Integer)
 
     auth_user = db.relationship('database.auth.models.User', lazy='joined')
     twitter_user = db.relationship('database.twitter.models.User', lazy='joined')
