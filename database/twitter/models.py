@@ -78,14 +78,21 @@ class Timeline(db.Model):
 
     __tablename__ = 'twitter_timelines'
 
+    class Type:
+        "Enum of timeline types."
+        values = (HOME, USER, LIST) = ('home', 'user', 'list')    
+
     DEFAULT_FREQUENCY = 15 * 60 # 15 mins
     MIN_FREQUENCY = 2 * 60 # 2 mins
     MAX_FREQUENCY = 24 * 3600 # 1 day
     MAX_FAILURES = 3 # to keep enabled
 
     id = db.Column(db.BigInteger, primary_key=True)
+    type = db.Column(db.Enum(*Type.values, name='timeline_types'), nullable=False,
+        default=Type.HOME)
     user_id = db.Column(db.BigInteger, 
-        db.ForeignKey('twitter_users.user_id'), nullable=False, unique=True)
+        db.ForeignKey('twitter_users.user_id'), nullable=False) #, unique=True
+    list_id = db.Column(db.BigInteger, unique=True)
     since_id = db.Column(db.BigInteger)
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
