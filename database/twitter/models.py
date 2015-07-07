@@ -23,7 +23,7 @@ class User(db.Model):
     ignored = db.Column(db.Boolean)
 
     token = db.relationship('Token', backref='user', uselist=False)
-    timeline = db.relationship('Timeline', backref='user', uselist=False)
+    timelines = db.relationship('Timeline', backref='user')
     statuses = db.relationship('Status', backref='user', lazy='dynamic')
     reader = db.relationship('Reader', uselist=False)
 
@@ -34,7 +34,7 @@ class User(db.Model):
         self.user_id = user_id
         if key and secret:
             self.token = Token(user_id=user_id, key=key, secret=secret)
-            self.timeline = Timeline(user_id=user_id)
+            self.timelines.append(Timeline(user_id=user_id))
 
     def load(self, user):
         "Load user data from specified Twitter API `user`."
@@ -83,7 +83,7 @@ class Timeline(db.Model):
         values = (HOME, USER, LIST) = ('home', 'user', 'list')    
 
     DEFAULT_FREQUENCY = 15 * 60 # 15 mins
-    MIN_FREQUENCY = 2 * 60 # 2 mins
+    MIN_FREQUENCY = 1 * 60 # 1 min
     MAX_FREQUENCY = 24 * 3600 # 1 day
     MAX_FAILURES = 3 # to keep enabled
 
@@ -103,7 +103,7 @@ class Timeline(db.Model):
     failures = db.Column(db.SmallInteger, nullable=False, default=0)
 
     def __repr__(self):
-        return '<Twitter Timeline (%s): @%s>' % (self.user_id, self.user.screen_name)
+        return '<Twitter %s Timeline (%s): @%s>' % (self.type.capitalize(), self.user_id, self.user.screen_name)
 
 
 class Status(db.Model):
