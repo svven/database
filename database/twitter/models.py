@@ -103,7 +103,8 @@ class Timeline(db.Model):
     failures = db.Column(db.SmallInteger, nullable=False, default=0)
 
     def __repr__(self):
-        return '<Twitter %s Timeline (%s): @%s>' % (self.type.capitalize(), self.user_id, self.user.screen_name)
+        return '<Twitter %s Timeline (%s): @%s>' % (self.type.capitalize(), 
+            self.list_id or self.user_id, self.user.screen_name)
 
 
 class Status(db.Model):
