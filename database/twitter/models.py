@@ -116,7 +116,7 @@ class Status(db.Model):
     status_id = db.Column(db.BigInteger, nullable=False, unique=True)
     user_id = db.Column(db.BigInteger, 
         db.ForeignKey('twitter_users.user_id'), nullable=False)
-    url = db.Column(db.String, nullable=False)
+    url = db.Column(db.String, nullable=False, index=True)
     created_at = db.Column(db.DateTime, nullable=False)
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)

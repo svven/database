@@ -12,7 +12,7 @@ class Link(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True)
     slug = db.Column(db.String, unique=True) #, nullable=False 
-    url = db.Column(db.String, nullable=False, unique=True)
+    url = db.Column(db.String, nullable=False, unique=True, index=True)
     site = db.Column(db.String)
     title = db.Column(db.String)
     image_url = db.Column(db.String)
