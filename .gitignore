@@ -4,3 +4,4 @@ backups
 svven_database*
 *.pyc
 *.sql
+*.pfltr
