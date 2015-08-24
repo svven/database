@@ -115,13 +115,13 @@ class Status(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     status_id = db.Column(db.BigInteger, nullable=False, unique=True)
     user_id = db.Column(db.BigInteger, 
-        db.ForeignKey('twitter_users.user_id'), nullable=False)
+        db.ForeignKey('twitter_users.user_id'), nullable=False, index=True)
     url = db.Column(db.String, nullable=False, index=True)
     created_at = db.Column(db.DateTime, nullable=False)
     state = db.Column(db.Enum(*State.values, name='job_states'), nullable=False,
         default=State.NONE)
     link_id = db.Column(db.BigInteger, 
-        db.ForeignKey('news_links.id'))
+        db.ForeignKey('news_links.id'), index=True)
 
     link = db.relationship('Link', backref='twitter_statuses')
     pick = db.relationship('Pick', backref='twitter_status', uselist=False)
