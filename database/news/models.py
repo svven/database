@@ -68,12 +68,12 @@ class Reader(db.Model):
     picks = db.relationship('Pick', backref='reader', lazy='dynamic')
 
     @property
-    def user(self):
+    def is_user(self):
         return not self.auth_user_id is None
 
     @property
     def visible(self):
-        return bool(self.user or self.featured)
+        return bool(self.is_user or self.featured)
 
     ## Proxy properties
     @property
